@@ -6,42 +6,51 @@
 {% if config.extra.author and config.extra.display_author == true %}
 <address rel="author">By <span class="metaData">{{config.extra.author}}</span></address>
 {% endif %}
-<h1>{{ page.title }}</h1>
+
+{% if page.taxonomies.tags %}
+<p class="tagsData">
+  {% for tag in page.taxonomies.tags %}
+  <a href="/tags/{{ tag | slugify }}">{{ tag }}</a>
+  {% endfor %}
+</p>
+{% endif %}
+
+<h1>
+    {{ page.title }}
+</h1>
 
 {% if page.toc and page.extra.toc %}
-<h2>Table of contents</h2>
 <ul>
-  {% for h1 in page.toc %}
+  {% for h1 in page.toc | filter(attribute="level", value=1) %}
+  {% if page.extra.toc_exclude is undefined or h1.title not in page.extra.toc_exclude %}
   <li>
     <a href="{{ h1.permalink | safe }}">{{ h1.title }}</a>
     {% if h1.children %}
     <ul>
-      {% for h2 in h1.children %}
+      {% for h2 in h1.children | filter(attribute="level", value=2) %}
+      {% if page.extra.toc_exclude is undefined or h2.title not in page.extra.toc_exclude %}
       <li>
         <a href="{{ h2.permalink | safe }}">{{ h2.title }}</a>
         <ul>
-          {% for h3 in h2.children %}
+          {% for h3 in h2.children | filter(attribute="level", value=3) %}
+          {% if page.extra.toc_exclude is undefined or h3.title not in page.extra.toc_exclude %}
           <li>
             <a href="{{ h3.permalink | safe }}">{{ h3.title }}</a>
           </li>
+          {% endif %}
           {% endfor %}
         </ul>
       </li>
+      {% endif %}
       {% endfor %}
     </ul>
     {% endif %}
   </li>
+  {% endif %}
   {% endfor %}
 </ul>
 {% endif %}
 
 {{ page.content | safe }}
 
-<p class="tagsData">
-  {% if page.taxonomies.tags %}
-  {% for tag in page.taxonomies.tags %}
-  <a href="/tags/{{ tag | slugify }}">&#47;{{ tag }}&#47;</a>
-  {% endfor %}
-  {% endif %}
-</p>
 {% endblock content %}
