@@ -7,13 +7,13 @@
 <address rel="author">By <span class="metaData">{{config.extra.author}}</span></address>
 {% endif %}
 
-{% if page.taxonomies.tags %}
 <p class="tagsData">
-  {% for tag in page.taxonomies.tags %}
-  <a href="/tags/{{ tag | slugify }}">{{ tag }}</a>
-  {% endfor %}
-</p>
+{% if page.taxonomies.tags %}
+{% for tag in page.taxonomies.tags %}
+<a href="/tags/{{ tag | slugify }}">&#47;{{ tag }}&#47;</a>
+{% endfor %}
 {% endif %}
+</p>
 
 <h1>
     {{ page.title }}
